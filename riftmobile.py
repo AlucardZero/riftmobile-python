@@ -3,6 +3,18 @@ import requests
 import json
 import sys
 
+class Shard:
+        def __init__(self, name, shardId):
+                self.name = name
+                self.shardId = shardId
+
+class Zone:
+        def __init__(self, name, zoneId, event=None, started=None):
+                self.name = name
+                self.zoneId = zoneId
+                self.started = started
+                self.event = event
+
 class RiftClient:
         def __init__(self, dc):
                 if dc != "us" and dc != "eu":
@@ -14,10 +26,13 @@ class RiftClient:
                 r = requests.get(self.url + path, params=payload, headers=self.headers)
                 if r.status_code != requests.codes.ok:
                         r.raise_for_status()
-                return r.json
+
+                return r.json['data']
 
         def listShards(self):
-                print self.sendRequest("/shard/list")
+                shards = self.sendRequest("/shard/list")
+                return map(lambda shard: Shard(shard['name'], shard['shardId']), shards)
                 
         def listZones(self, shardId):
-                print self.sendRequest("/zoneevent/list", { 'shardId': shardId })
+                zones = self.sendRequest("/zoneevent/list", { 'shardId': shardId })
+                return map(lambda zone: Zone(zone['zone'], zone['zoneId']), zones)
