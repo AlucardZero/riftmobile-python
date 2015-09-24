@@ -30,9 +30,22 @@ class RiftClient:
                 return r.json['data']
 
         def listShards(self):
+                """ Lists all shards known to the mobile API.
+
+                Returns:
+                        A list of Shard objects
+                """
                 shards = self.sendRequest("/shard/list")
                 return map(lambda shard: Shard(shard['name'], shard['shardId']), shards)
                 
         def listZones(self, shardId):
+                """ Lists all zones known to the mobile API on a shard
+
+                Args:
+                        shardId (int): The shard's ID number
+
+                Returns:
+                        A list of Zone objects
+                """
                 zones = self.sendRequest("/zoneevent/list", { 'shardId': shardId })
-                return map(lambda zone: Zone(zone['zone'], zone['zoneId']), zones)
+                return map(lambda zone: Zone(zone['zone'], zone['zoneId'], zone.get('name'), zone.get('started')), zones)
