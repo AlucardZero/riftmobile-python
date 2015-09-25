@@ -1,3 +1,10 @@
+The DAY I started this, Rift announced they were discontinuing the Mobile
+client and API.  Therefore, work on this is going nowhere unless that is changed.
+
+
+
+
+
 Python library to interface with Rift (the MMO) mobile API
 Pre-alpha status, do not use
 With thanks to kevinbrill/rift.net ( https://github.com/kevinbrill/rift.net )
