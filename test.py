@@ -2,14 +2,29 @@
 import riftmobile
 import sys
 import ConfigParser
+
+#Invalid DC
+run = False
+try:
+        rc = riftmobile.RiftClient("zz")
+except ValueError as e:
+        run = True
+
+assert run, "Invalid DC test did not fail"
+
+#Valid DC
 rc = riftmobile.RiftClient("us")
+assert rc != None
+assert rc.authurl == "https://auth.trionworlds.com/auth"
 
 # Print the 4th shard
 shards = rc.listShards()
-print shards[3].name
+assert shards[3] == "Asphodel"
+
 # First zone of Deepwood
 zones = rc.listZones(1704)
-print zones[0].name
+assert zones[0].name == "Shimmersand"
+
 # Find an event anywhere
 stop = False
 for shard in shards:

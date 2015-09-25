@@ -26,9 +26,10 @@ class Character:
 class RiftClient:
         def __init__(self, dc):
                 if dc != "us" and dc != "eu":
-                        sys.exit("Invalid DC\n");
+                        raise ValueError("Invalid DC specified")
                 self.url = "http://chat-" + dc + ".riftgame.com:8080/chatservice"
-                self.loginurl = "https://chat-" + dc + ".riftgame.com/chatservice/loginByTicket?os=iOS&osVersion=5.100000&vendor=Apple";
+                self.authurl = "https://auth.trionworlds.com/auth"
+                self.loginurl = "https://chat-" + dc + ".riftgame.com/chatservice/loginByTicket?os=iOS&osVersion=5.100000&vendor=Apple"
                 self.headers = { 'UserAgent': 'trion/mobile', 'Accept': 'application/json' }
                 self.session = None
 
@@ -86,11 +87,11 @@ class RiftClient:
                         A status code indicating the result. 0 = success, other = the HTTP error code
                 """
                 self.session = requests.Session()
-                r = self.session.post("https://auth.trionworlds.com/auth", params={'username': username, 'password': password, 'channel': 1}, headers=self.headers)
+                r = self.session.post(self.authurl, params={'username': username, 'password': password, 'channel': 1}, headers=self.headers)
                 if r.status_code != requests.codes.ok:
                         return r.status_code;
 
-                r = self.session.post("https://chat-us.riftgame.com/chatservice/loginByTicket?os=iOS&osVersion=5.100000&vendor=Apple", params={'ticket': r.text}, headers=self.headers)
+                r = self.session.post(self.loginurl, params={'ticket': r.text}, headers=self.headers)
                 if r.status_code != requests.codes.ok:
                         return r.status_code
                 return 0
